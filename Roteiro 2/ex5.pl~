@@ -1,0 +1,45 @@
+% Ex. 5
+
+% Estenda o predicado viagem/3 tal que ele nao somente diga a voe
+% em quais cidades intermediarias voce passara, mas tambem como ir
+% de uma cidade a outra, ou seja, de carro, trem ou aviao.
+
+deCarro(auckland,hamilton).
+deCarro(hamilton,raglan).
+deCarro(valmont,saarbruecken).
+deCarro(valmont,metz).
+
+deTrem(metz,frankfurt).
+deTrem(saarbruecken,frankfurt).
+deTrem(metz,paris).
+deTrem(saarbruecken,paris).
+
+deAviao(frankfurt,bangkok).
+deAviao(frankfurt,singapore).
+deAviao(paris,losAngeles).
+deAviao(bangkok,auckland).
+deAviao(losAngeles,auckland).
+
+% Casos base
+
+viagem(X,Y, vai_de(deCarro(X,Y))) :- deCarro(X,Y).
+viagem(X,Y, vai_de(deTrem(X,Y))) :- deTrem(X,Y).
+viagem(X,Y, vai_de(deAviao(X,Y))) :- deAviao(X,Y).
+
+
+% Casos indutivos
+
+viagem(X,Y, vai_de(deCarro(X,Z),G)) :-
+  deCarro(X,Z),
+  viagem(Z,Y,G).
+
+viagem(X,Y, vai_de(deTrem(X,Z),G)) :-
+  deTrem(X,Z),
+  viagem(Z,Y,G).
+
+viagem(X,Y, vai_de(deAviao(X,Z),G)) :-
+  deAviao(X,Z),
+  viagem(Z,Y,G).
+
+
+
