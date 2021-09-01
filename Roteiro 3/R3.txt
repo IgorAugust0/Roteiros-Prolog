@@ -1,0 +1,229 @@
+1.
+/*
+ [trace]  ?- membro(a,[1,2,a,b]).
+   Call: (6) membro(a, [1, 2, a, b]) ?
+   Call: (7) membro(a, [2, a, b]) ?
+   Call: (8) membro(a, [a, b]) ?
+   Exit: (8) membro(a, [a, b]) ?
+   Exit: (7) membro(a, [2, a, b]) ?
+   Exit: (6) membro(a, [1, 2, a, b]) ?
+ true
+
+ [trace]  ?- membro(z,[1,2,a,b]).
+   Call: (6) membro(z, [1, 2, a, b]) ?
+   Call: (7) membro(z, [2, a, b]) ?
+   Call: (8) membro(z, [a, b]) ?
+   Call: (9) membro(z, [b]) ?
+   Call: (10) membro(z, []) ?
+   Fail: (10) membro(z, []) ?
+   Fail: (9) membro(z, [b]) ?
+   Fail: (8) membro(z, [a, b]) ?
+   Fail: (7) membro(z, [2, a, b]) ?
+   Fail: (6) membro(z, [1, 2, a, b]) ?
+ false.
+
+ [trace]  ?- membro(X,[1,2,a,b]).
+   Call: (6) membro(_G935, [1, 2, a, b]) ?
+   Exit: (6) membro(1, [1, 2, a, b]) ?
+ X = 1 ;
+   Redo: (6) membro(_G935, [1, 2, a, b]) ?
+   Call: (7) membro(_G935, [2, a, b]) ?
+   Exit: (7) membro(2, [2, a, b]) ?
+   Exit: (6) membro(2, [1, 2, a, b]) ?
+ X = 2 ;
+   Redo: (7) membro(_G935, [2, a, b]) ?
+   Call: (8) membro(_G935, [a, b]) ?
+   Exit: (8) membro(a, [a, b]) ?
+   Exit: (7) membro(a, [2, a, b]) ?
+   Exit: (6) membro(a, [1, 2, a, b]) ?
+ X = a ;
+   Redo: (8) membro(_G935, [a, b]) ?
+   Call: (9) membro(_G935, [b]) ?
+   Exit: (9) membro(b, [b]) ?
+   Exit: (8) membro(b, [a, b]) ?
+   Exit: (7) membro(b, [2, a, b]) ?
+   Exit: (6) membro(b, [1, 2, a, b]) ?
+ X = b ;
+   Redo: (9) membro(_G935, [b]) ?
+   Call: (10) membro(_G935, []) ?
+   Fail: (10) membro(_G935, []) ?
+   Fail: (9) membro(_G935, [b]) ?
+   Fail: (8) membro(_G935, [a, b]) ?
+   Fail: (7) membro(_G935, [2, a, b]) ?
+   Fail: (6) membro(_G935, [1, 2, a, b]) ?
+ false.
+*/
+-----------------------------------------------------------------------------------------
+2.
+intercala1([],[],[]).
+intercala1([H1 | T1], [H2 | T2], [H1, H2 | T3]) :- intercala1(T1, T2, T3).
+-----------------------------------------------------------------------------------------
+3.
+intercala2([],[],[]).
+intercala2([H1 | T1], [H2 | T2], [[H1, H2] | T3]) :- intercala2(T1, T2, T3).
+-----------------------------------------------------------------------------------------
+4.
+intercala3([],[],[]).
+intercala3([H1 | T1], [H2 | T2], [join(H1, H2) | T3]) :- intercala3(T1, T2, T3).
+-----------------------------------------------------------------------------------------
+5.
+subconjunto([],_).
+subconjunto([H1 | T1], T2) :-
+  membro(H1, T2),
+  subconjunto(T1, T2).
+-----------------------------------------------------------------------------------------
+6.
+superconjunto(_,[]).
+superconjunto(T1, [H2 | T2]) :-
+  member(H2, T1),
+  superconjunto(T1, T2).
+-----------------------------------------------------------------------------------------
+7.
+duplicada(Lista) :- append(X, X, Lista).
+-----------------------------------------------------------------------------------------
+8.
+%% Funcoes Auxiliares:
+
+% inversa
+% caso base
+inversaAcum([],A,A).
+
+% caso indutivo
+inversaAcum([H|T],A,R) :- inversaAcum(T,[H|A],R).
+
+% principal
+inversa(L,R) :- inversaAcum(L,[],R).
+
+
+%% Funcao Principal Palindromo
+
+palindromo(Lista) :-
+  inversa(Lista, Lista).
+
+% 1. Socorram-me, subi no onibus em Marrocos
+% palindromo([s,o,c,o,r,r,a,m,m,e,s,u,b,i,n,o,o,n,i,b,u,s,e,m,m,a,r,r,o,c,o,s]).
+% true
+
+% 2. Anotaram a data da maratona
+% palindromo([a,n,o,t,a,r,a,m,a,d,a,t,a,d,a,m,a,r,a,t,o,n,a]).
+% true
+
+% 3. A droga da gorda
+% palindromo([a,d,r,o,g,a,d,a,g,o,r,d,a]).
+% true
+
+% 4. A mala nada na lama
+% palindromo([a,m,a,l,a,n,a,d,a,n,a,l,a,m,a]).
+% true
+
+% 5. A torre da derrota
+% palindromo([a,t,o,r,r,e,d,a,d,e,r,r,o,t,a]).
+% true
+-----------------------------------------------------------------------------------------
+10.
+incrementa(X,Y) :- Y is X + 1.
+-----------------------------------------------------------------------------------------
+11.
+soma(X,Y,Z) :- Z is (X + Y).
+-----------------------------------------------------------------------------------------
+12.
+somaUm([],[]).
+somaUm([H1|T1], [H2|T2]) :-
+  is(H2,+(H1,1)),
+  somaUm(T1,T2).
+-----------------------------------------------------------------------------------------
+13.
+% caso base
+min([],A,A).
+
+% casos recursivos
+% maior que
+min([H|T],A,Min) :-
+    H < A,
+    min(T,H,Min).
+
+% menor que
+min([H|T],A,Min) :-
+    H >= A,
+    min(T,A,Min).
+
+minAcum(Lista, Min) :-
+  Lista = [H|_],
+  min(Lista, H, Min).
+
+-----------------------------------------------------------------------------------------
+14.
+% caso base
+multiEsc(A, [], []).
+
+% caso indutivo
+multiEsc(A, [H1|T1], [H2|T2]) :-
+  is(H2,*(H1,A)),
+  multiEsc(A, T1, T2).
+
+-----------------------------------------------------------------------------------------
+15.
+% caso base
+escAcum([],[],A,A).
+
+% caso indutivo
+escAcum([H1|T1], [H2|T2], A, Resultado) :-
+  is(Novo,+(A,*(H1,H2))),
+  escAcum(T1, T2, Novo, Resultado).
+
+prodEsc(Vetor1, Vetor2, Resultado) :-
+  escAcum(Vetor1, Vetor2, 0, Resultado).
+
+-----------------------------------------------------------------------------------------
+16.
+remove(X,[X|R],R).
+remove(X,[F|R],[F|S]) :- remove(X,R,S).
+
+-----------------------------------------------------------------------------------------
+17.
+remove(X,[X|R],R).
+remove(X,[F|R],[F|S]) :- remove(X,R,S).
+
+insere(X,[],[X]).
+insere(X,L,L1) :- remove(X,L1,L).
+
+-----------------------------------------------------------------------------------------
+18.
+
+-----------------------------------------------------------------------------------------
+19.
+
+-----------------------------------------------------------------------------------------
+20.
+
+-----------------------------------------------------------------------------------------
+21.
+
+-----------------------------------------------------------------------------------------
+22.
+
+-----------------------------------------------------------------------------------------
+23.
+
+-----------------------------------------------------------------------------------------
+24.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
